@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+
+  // Quan hệ
+  roleId   Int?
+  role     role?    @relation(fields: [roleId], references: [id])
+  quizzes  Quiz[]   @relation("UserQuiz")
+  results  Result[]
+
+  @@map("users")
+}
+
+model Quiz {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String?
+
+  // Quan hệ
+  questions   Question[]
+  user        User        @relation("UserQuiz", fields: [userId], references: [id])
+  userId      Int
+  results     Result[]
+  @@map("quizzes")
+}
+
+model Question {
+  id        Int        @id @default(autoincrement())
+  content   String
+  quizId    Int
+  quiz      Quiz       @relation(fields: [quizId], references: [id])
+  answers   Answer[]
+  @@map("questions")
+
+}
+
+model Answer {
+  id          Int        @id @default(autoincrement())
+  content     String
+  isCorrect   Boolean
+  questionId  Int
+  question    Question   @relation(fields: [questionId], references: [id])
+  @@map("answers")
+}
+
+model Result {
+  id       Int     @id @default(autoincrement())
+  score    Int
+  userId   Int
+  quizId   Int
+
+  user     User    @relation(fields: [userId], references: [id])
+  quiz     Quiz    @relation(fields: [quizId], references: [id])
+  @@map("results")
+}
+
+model role{
+  id       Int     @id @default(autoincrement())
+  name     String
+  description String?
+  users    User[]
+  @@map("roles")
+}
