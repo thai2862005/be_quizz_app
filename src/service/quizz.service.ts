@@ -63,4 +63,6 @@ const getALLQuizzes = async () => {
     throw error;
   }
 };
+
+
 export { CreateQuiz, CreateQuestion, getALLQuizzes };

@@ -1,19 +1,17 @@
-import { User } from '../models/User'; // nếu bạn có model User, nếu không thì xóa dòng này
+import { User as PrismaUser } from "@prisma/client";
 
 declare global {
   namespace Express {
-    interface User {
-      id: number;
-      email: string;
-      role: {
-        id: number;
-        name: string;
-      };
-    }
-
     interface Request {
-      user?: User;
+      user?: PrismaUser & {
+        role?: {
+          id: number;
+          name: string;
+        };
+      };
       isAuthenticated?: () => boolean;
     }
   }
 }
+
+export {};

@@ -45,13 +45,47 @@ const countTotalUsers = async () => {
     return totalPages;
 }
 //get all users with pagination
-const getALLUsers = async (page: number) => {
-    const pagesize = TOTAL_ITEMS_PER_PAGE;
-    const skip = (page - 1) * pagesize;
-    const users = await prisma.user.findMany({
-        skip,
-        take: pagesize
-    });
-    return users;
-}
-export { createUser, deleteUser, updateUser, getUserById, getALLUsers , countTotalUsers };
+    const getALLUsers = async (page: number) => {
+        const pagesize = TOTAL_ITEMS_PER_PAGE;
+        const skip = (page - 1) * pagesize;
+        const users = await prisma.user.findMany({
+            skip,
+            take: 3,
+            include:{
+                results:{
+                    orderBy:{
+                        score:"desc"
+                    }
+                }
+            }
+        });
+        return users;
+    }
+    const getAllUserTopScore = async () => {
+          const users = await prisma.user.findMany({
+            take: 3,
+            include:{
+                results:{
+                    orderBy:{
+                        score:"desc"
+                    }
+                }
+            }
+        });
+        return users;
+    }
+    const getAllUserTop7to10 = async () => {
+          const users = await prisma.user.findMany({
+            skip:3,
+            take: 7,
+            include:{
+                results:{
+                    orderBy:{
+                        score:"desc"
+                    }
+                }
+            }
+        });
+        return users;
+    }
+export { createUser, deleteUser, updateUser, getUserById, getALLUsers , countTotalUsers , getAllUserTopScore,getAllUserTop7to10 };

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import express, { Express } from 'express';
-import { createUser, deleteUser, updateUser, getUserById, getALLUsers, countTotalUsers} from '../service/user.service';
+import { createUser, deleteUser, updateUser, getUserById, getALLUsers, countTotalUsers, getAllUserTopScore} from '../service/user.service';
 import { Request, Response } from 'express';
 //create user
 const CreateUserApi = async(req:Request, res:Response) => {
@@ -40,6 +40,7 @@ const getALLUsersApi = async (req: Request, res: Response) => {
 
     const countTotalUser = await countTotalUsers();
     const users = await getALLUsers(+currentPage);
+    console.log("Users found:", users.length);
 
     res.status(200).json({ 
         users,
@@ -49,4 +50,14 @@ const getALLUsersApi = async (req: Request, res: Response) => {
     });
 }
 
-export { CreateUserApi, DeleteUserApi, UpdateUserApi, GetUserByIdApi, getALLUsersApi };
+const getALLUsersTopScoreApi = async (req: Request, res: Response) => {
+
+    const users = await getAllUserTopScore();
+    console.log("Users found:", users.length);
+
+    res.status(200).json({ 
+        users,
+        message: "get All users top score successfully"
+    });
+}
+export { CreateUserApi, DeleteUserApi, UpdateUserApi, GetUserByIdApi, getALLUsersApi,getALLUsersTopScoreApi };

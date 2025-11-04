@@ -57,6 +57,7 @@ model Answer {
 model Result {
   id       Int     @id @default(autoincrement())
   score    Int
+  sum      Int
   userId   Int
   quizId   Int
 

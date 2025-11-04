@@ -26,5 +26,7 @@ import {jwt} from "jsonwebtoken"
     const access_token = jwt.sign(payload, secretKey, { expiresIn });
     return access_token;
   };
-  
+
+    
+
   export {handleLogin}
