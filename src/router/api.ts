@@ -3,6 +3,7 @@ import { Express } from 'express';
 import { CreateUserApi, DeleteUserApi, getALLUsersApi, getALLUsersTopScoreApi, GetUserByIdApi, UpdateUserApi } from '../controller/user.controller';
 import { getALLQuizzesApi } from '../controller/quizz.controller';
 import { getQuizResultsApi, saveQuizResultAPi } from '../controller/result.controller';
+import { LoginApi } from '../controller/auth.controller';
 const router = express.Router();
 const webRouter =(app:Express) => {
   router.get("/", (req, res) => {
@@ -22,6 +23,8 @@ router.post("/results",saveQuizResultAPi);
 router.get("/results/:userId",getQuizResultsApi)
 //top score users
 router.get("/top-scores",getALLUsersTopScoreApi)
+//login 
+router.post("/login",LoginApi);
     app.use("/api", router);
 
 };
