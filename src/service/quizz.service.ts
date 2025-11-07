@@ -64,5 +64,21 @@ const getALLQuizzes = async () => {
   }
 };
 
-
-export { CreateQuiz, CreateQuestion, getALLQuizzes };
+const getQuizzBuyId = async (id:number) => {
+  try {
+    const quiz = await prisma.quiz.findUnique({
+        where:{id:+id},
+        include: {
+            questions: {  
+                include: {
+                    answers: true,
+                }
+            },
+        },
+    });
+    return quiz;
+  } catch (error) {
+    throw error;
+  }
+  };
+export { CreateQuiz, CreateQuestion, getALLQuizzes ,getQuizzBuyId};
