@@ -12,12 +12,12 @@ const saveQuizResultAPi = async (req:Request,res:Response)=>{
 }
 const getQuizResultsApi = async (req: Request, res: Response) => {
   try {
-    const userId = Number(req.params.userId);
-    if (!userId) {
-      return res.status(400).json({ message: "Thiếu userId" });
-    }
+      // const userId = Number(req.params.userId);
+      // if (!userId) {
+      //   return res.status(400).json({ message: "Thiếu userId" });
+      // }
 
-    const results = await getQuizResults(userId);
+    const results = await getQuizResults();
     res.status(200).json({
       message: "Danh sách kết quả quiz",
       data: results,

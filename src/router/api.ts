@@ -15,14 +15,15 @@ const webRouter =(app:Express) => {
 router.get("/quizzes", getALLQuizzesApi);
 router.get("/quizzes/:id", getQuizzByIdApi);
 //users
-router.get("/users", getALLUsersApi);
+router.get("/users",checkJwt, getALLUsersApi);
 router.post("/users", CreateUserApi);
 router.delete("/users/:id", DeleteUserApi);
 router.put("/users/:id", UpdateUserApi);
-router.get("/users/:id", GetUserByIdApi);
+router.get("/users/:id",checkJwt, GetUserByIdApi);
 //result  
-router.post("/results",saveQuizResultAPi);
-router.get("/results/:userId",getQuizResultsApi)
+router.post("/results",checkJwt,saveQuizResultAPi);
+router.get("/results/:id",checkJwt,getQuizResultsApi)
+router.get("/results",checkJwt,getQuizResultsApi)
 //top score users
 router.get("/top-scores",getALLUsersTopScoreApi)
 //login 

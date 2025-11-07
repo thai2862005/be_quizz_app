@@ -34,13 +34,19 @@ if (existingResult) {
   console.log("✅ Đã lưu kết quả quiz mới cho user:", user.id);
 }
 };
-const getQuizResults = async (userId: number) => {
+const getQuizResults = async () => {
   const results = await prisma.result.findMany({
     take:3,
-    where: { userId },
     include: { user: { select: { id: true, name: true, email: true } } },
     orderBy: { score: "desc" },
   });
   return results;
 };
-export {saveQuizResult,getQuizResults}
+
+const getQuizResultByUserId = async (id: number) => {
+    const results = await prisma.result.findUnique({
+      where: { id: +id },
+    })
+    return results;
+}
+export {saveQuizResult,getQuizResults,getQuizResultByUserId}
