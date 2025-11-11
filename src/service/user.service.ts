@@ -50,7 +50,7 @@ const countTotalUsers = async () => {
         const skip = (page - 1) * pagesize;
         const users = await prisma.user.findMany({
             skip,
-            take: 3,
+            take: pagesize,
             include:{
                 results:{
                     orderBy:{

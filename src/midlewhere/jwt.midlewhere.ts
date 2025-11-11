@@ -2,8 +2,8 @@ import { Request,Response,NextFunction } from "express"
 import jwt from 'jsonwebtoken';
 const checkJwt = (req:Request,res:Response,next:NextFunction)=>{
 const path = req.path;
-const whitelist = ["/login"]
-const isWhitelist = whitelist.some((i)=> path.startsWith(i));
+const whitelist = ["/login","/register"];
+const isWhitelist = whitelist.some(item => item === path);
 if(isWhitelist){
     return next();
 }

@@ -11,7 +11,7 @@ const LoginApi = async (req:Request, res:Response) => {
 }
 
 const registerUserApi = async (req:Request, res:Response) => {
-    const {name, email, password} = req.body;
+    const {name, email, password, confirmPassword} = req.body;
     try {
         const newUser = await registerUser(name, email, password);
         res.status(201).json({ user: newUser, message: "User registered successfully" });
@@ -19,4 +19,14 @@ const registerUserApi = async (req:Request, res:Response) => {
         res.status(500).json({ message: "User registration failed", error: error.message });
     }
 }
-export {LoginApi, registerUserApi}    
+const fetchAccountAPi = async (req:Request, res:Response) => {
+    const user = (req as any).user;
+    try {
+        res.status(200).json({ data:{
+            user
+        }, message: "Fetch account successful" });
+    } catch (error) {
+        res.status(500).json({ message: "Fetch account failed", error: error.message });
+    }
+    }
+export {LoginApi, registerUserApi, fetchAccountAPi}    
