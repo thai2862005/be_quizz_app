@@ -25,5 +25,20 @@ const handleLogin = async (username: string, password: string) => {
   const access_token = jwt.sign(payload, secretKey, { expiresIn });
   return access_token;
 };
-
-export { handleLogin };
+const registerUser = async (name: string, email: string, password: string) => {
+  const userRole = await prisma.role.findUnique({
+    where: { name: "USER" },
+  });
+ if(userRole){
+  const newUser = await prisma.user.create({
+    data: {
+      name,
+      email,
+      password,
+      roleId: userRole.id,
+    },
+  });
+  return newUser;
+};
+}
+export { handleLogin, registerUser };

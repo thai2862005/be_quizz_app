@@ -68,8 +68,8 @@ model Result {
 
 model role{
   id       Int     @id @default(autoincrement())
-  name     String
-  description String?
+  name     String @unique @db.VarChar(255)
+  description String? @db.VarChar(255)
   users    User[]
   @@map("roles")
 }
