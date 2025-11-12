@@ -37,7 +37,7 @@ Tạo file `.env` trong thư mục gốc dự án (hoặc dùng file mẫu bên 
 ### 🧾 .env.example
 ```env
 # DATABASE
-DATABASE_URL="postgresql://user:password@localhost:5432/quizzapp?schema=public"
+DATABASE_URL="mysql://user:password@localhost:5432/schemaDatabase"
 
 # JWT
 JWT_SECRET="your_secret_key"
@@ -46,66 +46,65 @@ JWT_SECRET="your_secret_key"
 PORT=3000
 ```
 
-> 💡 Thay `user`, `password`, và `database` theo thông tin thực tế trong máy bạn.
+> 💡 Thay `user`, `password`, và `schemaDatabase` theo thông tin thực tế trong máy bạn.
 
 ---
 
 ## 🗂 4. Cấu trúc thư mục
 
 ```
-# File Tree: backendQuizzApp
+File Tree: backendQuizzApp
 
-```
-├── 📁 prisma
-│   ├── 📁 migrations
-│   │   ├── 📁 20251022075351_init_db
+────────────────────────────────────────────────────────────────────────────────
+
+├── 📁 prisma/
+│   ├── 📁 migrations/
+│   │   ├── 📁 20251022075351_init_db/
 │   │   │   └── 📄 migration.sql
-│   │   ├── 📁 20251022080210_add_model
+│   │   ├── 📁 20251022080210_add_model/
 │   │   │   └── 📄 migration.sql
-│   │   ├── 📁 20251022112216_fix
+│   │   ├── 📁 20251022112216_fix/
 │   │   │   └── 📄 migration.sql
-│   │   ├── 📁 20251027114620_add_role_table_data
+│   │   ├── 📁 20251027114620_add_role_table_data/
 │   │   │   └── 📄 migration.sql
-│   │   ├── 📁 20251030155034_update_result
+│   │   ├── 📁 20251030155034_update_result/
 │   │   │   └── 📄 migration.sql
-│   │   ├── 📁 20251107110159_uniqu
+│   │   ├── 📁 20251107110159_uniqu/
 │   │   │   └── 📄 migration.sql
-│   │   ├── 📁 20251111033403_update_role2
+│   │   ├── 📁 20251111033403_update_role2/
 │   │   │   └── 📄 migration.sql
 │   │   └── ⚙️ migration_lock.toml
 │   └── 📄 schema.prisma
-├── 📁 src
-│   ├── 📁 config
+├── 📁 src/
+│   ├── 📁 config/
 │   │   ├── 📄 client.ts
 │   │   ├── 📄 constant.ts
 │   │   └── 📄 seed.ts
-│   ├── 📁 controller
+│   ├── 📁 controller/
 │   │   ├── 📄 auth.controller.ts
 │   │   ├── 📄 quizz.controller.ts
 │   │   ├── 📄 result.controller.ts
 │   │   └── 📄 user.controller.ts
-│   ├── 📁 midlewhere
+│   ├── 📁 midlewhere/
 │   │   ├── 📄 jwt.midlewhere.ts
 │   │   └── 📄 role.midlewhere.ts
-│   ├── 📁 router
+│   ├── 📁 router/
 │   │   └── 📄 api.ts
-│   ├── 📁 service
+│   ├── 📁 service/
 │   │   ├── 📄 auth.service.ts
 │   │   ├── 📄 quizz.service.ts
 │   │   ├── 📄 result.service.ts
 │   │   └── 📄 user.service.ts
-│   ├── 📁 type
+│   ├── 📁 type/
 │   │   └── 📄 index.d.ts
 │   └── 📄 app.ts
 ├── ⚙️ .gitignore
+├── 📝 README.md
 ├── ⚙️ package-lock.json
 ├── ⚙️ package.json
 └── ⚙️ tsconfig.json
-```
 
----
-
----
+────────────────────────────────────────────────────────────────────────────────
 
 ## 🛠 5. Thiết lập Prisma ORM
 
