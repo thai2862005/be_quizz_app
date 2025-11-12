@@ -14,7 +14,7 @@ const registerUserApi = async (req:Request, res:Response) => {
     const {name, email, password, confirmPassword} = req.body;
     try {
         const newUser = await registerUser(name, email, password);
-        res.status(201).json({ user: newUser, message: "User registered successfully" });
+        res.status(201).json({ user: newUser, message: "User registered successfully    " });
     } catch (error) {
         res.status(500).json({ message: "User registration failed", error: error.message });
     }
