@@ -30,7 +30,7 @@ router.get("/top-scores",getALLUsersTopScoreApi)
 //login 
 router.post("/login",LoginApi);
 //top 7 to 10 users
-router.get("/top-7-10-scores  ",getAllUserTop7to10ScoreApi);
+router.get("/top-7-10-scores",getAllUserTop7to10ScoreApi);
 //register
 router.post("/register",registerUserApi);
 //account
