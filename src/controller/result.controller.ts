@@ -1,5 +1,5 @@
 import { Request,Response } from "express"
-import { getQuizResults, saveQuizResult } from "../service/result.service";
+import { getQuizResults, saveQuizResult, saveQuizResultById } from "../service/result.service";
 import { message } from "antd";
 const saveQuizResultAPi = async (req:Request,res:Response)=>{
     const {quizId,score} = req.body;
@@ -10,6 +10,25 @@ const saveQuizResultAPi = async (req:Request,res:Response)=>{
     const result = await saveQuizResult(quizId,user,score);
     res.status(200).json({result,message:"Lưu kết quả thành công"})
 }
+
+//get quiz results api
+const saveQuizResultByIdApi = async (req: Request, res: Response) => {
+  try {
+    const { quizId, score, userId } = req.body;
+    
+
+    if (!quizId || !userId || score === undefined) {
+      return res.status(400).json({ error: "quizId, userId and score are required" });
+    }
+
+    const result = await saveQuizResultById(Number(quizId), Number(userId), Number(score));
+    res.status(200).json(result);
+
+  } catch (error: any) {
+    console.error("Error saving quiz result:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
 const getQuizResultsApi = async (req: Request, res: Response) => {
   try {
       // const userId = Number(req.params.userId);
@@ -29,5 +48,5 @@ const getQuizResultsApi = async (req: Request, res: Response) => {
 };
 
 export {
-    saveQuizResultAPi,getQuizResultsApi
+    saveQuizResultAPi,getQuizResultsApi,saveQuizResultByIdApi
 }
