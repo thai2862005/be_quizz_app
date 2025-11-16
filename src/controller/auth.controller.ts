@@ -22,9 +22,9 @@ const registerUserApi = async (req:Request, res:Response) => {
 const fetchAccountAPi = async (req:Request, res:Response) => {
     const user = (req as any).user;
     try {
-        res.status(200).json({ data:{
+        res.status(200).json({      
             user
-        }, message: "Fetch account successful" });
+        , message: "Fetch account successful" });
     } catch (error) {
         res.status(500).json({ message: "Fetch account failed", error: error.message });
     }

@@ -61,31 +61,89 @@ const countTotalUsers = async () => {
         });
         return users;
     }
-    const getAllUserTopScore = async () => {
-          const users = await prisma.user.findMany({
-            take: 3,
-            include:{
-                results:{
-                    orderBy:{
-                        score:"desc"
-                    }
-                }
-            }
-        });
-        return users;
-    }
-    const getAllUserTop7to10 = async () => {
-          const users = await prisma.user.findMany({
-            skip:3,
-            take: 7,
-            include:{
-                results:{
-                    orderBy:{
-                        score:"desc"
-                    }
-                }
-            }
-        });
-        return users;
-    }
+
+// =======================
+// Lấy Top 3 user theo điểm cao nhất
+// =======================
+
+// =======================
+// Lấy Top 3 user theo điểm cao nhất
+// =======================
+const getAllUserTopScore = async () => {
+  const grouped = await prisma.result.groupBy({
+    by: ["userId"],
+    _max: { score: true },
+    orderBy: { _max: { score: "desc" } },
+    take: 3,
+  });
+
+  const users = await Promise.all(
+    grouped.map(async (g) => {
+      return prisma.user.findUnique({
+        where: { id: g.userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          results: {
+            orderBy: { score: "desc" },
+            take: 1, // lấy kết quả cao nhất
+            select: {
+              id: true,
+              score: true,
+              sum: true,
+              userId: true,
+              quizId: true,
+            },
+          },
+        },
+      });
+    })
+  );
+
+  return users;
+};
+
+// =======================
+// Lấy Top 4 → 10 user theo điểm cao nhất
+// =======================
+const getAllUserTop7to10 = async () => {
+  const grouped = await prisma.result.groupBy({
+    by: ["userId"],
+    _max: { score: true },
+    orderBy: { _max: { score: "desc" } },
+    skip: 3, // bỏ top 3
+    take: 7, // lấy 7 user tiếp theo
+  });
+
+  const users = await Promise.all(
+    grouped.map(async (g) => {
+      return prisma.user.findUnique({
+        where: { id: g.userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          results: {
+            orderBy: { score: "desc" },
+            take: 1, // lấy kết quả cao nhất
+            select: {
+              id: true,
+              score: true,
+              sum: true,
+              userId: true,
+              quizId: true,
+            },
+          },
+        },
+      });
+    })
+  );
+
+  return users;
+};
+
+
+
+
 export { createUser, deleteUser, updateUser, getUserById, getALLUsers , countTotalUsers , getAllUserTopScore,getAllUserTop7to10 };
