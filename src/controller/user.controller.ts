@@ -62,6 +62,7 @@ const getALLUsersTopScoreApi = async (req: Request, res: Response) => {
 }
 const getAllUserTop7to10ScoreApi = async (req: Request, res: Response) => {
     const users = await getAllUserTop7to10();
+    console.log("Users found:", users.length);
     res.status(200).json({ 
         users: users,
         message: "get All users top 7 to 10 score successfully"
