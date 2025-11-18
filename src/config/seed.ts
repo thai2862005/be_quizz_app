@@ -1,37 +1,45 @@
 import { prisma } from "./client";
 
 const initSeedConfig = async () => {
+  // 1️⃣ Seed ROLE trước
   const roleCount = await prisma.role.count();
-  const userCount = await prisma.user.count();
-  const quizCount = await prisma.quiz.count();
+  if (roleCount === 0) {
+    await prisma.role.createMany({
+      data: [
+        { name: "ADMIN", description: "Quản trị viên hệ thống" },
+        { name: "USER", description: "Người dùng hệ thống" }
+      ],
+    });
+    console.log("✅ Roles seeded!");
+  }
+
+  // 2️⃣ Lấy lại role sau khi đã tạo
   const adminRole = await prisma.role.findFirst({ where: { name: "ADMIN" } });
   const userRole = await prisma.role.findFirst({ where: { name: "USER" } });
-  // 🧩 1. Tạo user mẫu nếu chưa có
+
+  // 3️⃣ Seed USER
+  const userCount = await prisma.user.count();
   if (userCount === 0) {
     await prisma.user.createMany({
       data: [
-        { name: "Alice", email: "alice@example.com", password: "password123",roleId:adminRole.id },
-        { name: "Bob", email: "bob@example.com", password: "password123" ,roleId:adminRole.id},
-        { name: "Charlie", email: "charlie@example.com", password: "password123" ,roleId:adminRole.id},
+        { name: "Alice", email: "alice@example.com", password: "password123", roleId: adminRole!.id },
+        { name: "Bob", email: "bob@example.com", password: "password123", roleId: adminRole!.id },
+        { name: "Charlie", email: "charlie@example.com", password: "password123", roleId: userRole!.id },
       ],
     });
     console.log("✅ Users seeded!");
   }
 
-  // 🧩 2. Tạo quiz mẫu nếu chưa có
+  // 4️⃣ Seed Quiz + Questions nếu chưa có
+  const quizCount = await prisma.quiz.count();
   if (quizCount === 0) {
-    // Lấy user đầu tiên làm người tạo quiz
     const firstUser = await prisma.user.findFirst();
 
     await prisma.quiz.create({
       data: {
         title: "Quiz về Java cơ bản",
         description: "Kiểm tra kiến thức cơ bản về OOP và cú pháp Java.",
-
-        // liên kết quiz với user
-        user: {
-          connect: { id: firstUser!.id },
-        },
+        user: { connect: { id: firstUser!.id } },
 
         questions: {
           create: [
@@ -60,27 +68,11 @@ const initSeedConfig = async () => {
           ],
         },
       },
-      include: {
-        questions: {
-          include: {
-            answers: true,
-          },
-        },
-      },
     });
 
     console.log("✅ Quiz + Questions + Answers seeded!");
   } else {
-    console.log("⚠️ Data already exists, skipping seed.");
-  }
-
-   if (roleCount === 0) {
-    await prisma.role.createMany({
-      data: [
-        { name: "ADMIN", description: "Quản trị viên hệ thống" },
-        { name: "USER", description: "Người dùng hệ thống" }
-      ]
-    });
+    console.log("⚠️ Quiz exists, skipping.");
   }
 };
 
