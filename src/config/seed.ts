@@ -76,4 +76,4 @@ const initSeedConfig = async () => {
   }
 };
 
-export default initSeedConfig;
+export default initSeedConfig
