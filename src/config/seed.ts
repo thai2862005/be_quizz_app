@@ -424,53 +424,228 @@ const initSeedConfig = async () => {
       userId: firstUser!.id,
       questions: {
         create: [
-          {
-            content: "Tập tin nguồn C++ có phần mở rộng là gì?",
-            answers: { create: [
-              { content: ".cpp", isCorrect: true },
-              { content: ".c", isCorrect: false },
-              { content: ".java", isCorrect: false },
-              { content: ".exe", isCorrect: false },
-            ] }
-          },
-          {
-            content: "Khai báo biến số nguyên đúng trong C++?",
-            answers: { create: [
-              { content: "int x = 10;", isCorrect: true },
-              { content: "integer x = 10;", isCorrect: false },
-              { content: "num x = 10;", isCorrect: false },
-              { content: "x int = 10;", isCorrect: false },
-            ] }
-          },
-          {
-            content: "Câu nào in ra màn hình trong C++?",
-            answers: { create: [
-              { content: "cout << 'Hello';", isCorrect: true },
-              { content: "System.out.println('Hello');", isCorrect: false },
-              { content: "console.log('Hello');", isCorrect: false },
-              { content: "print('Hello');", isCorrect: false },
-            ] }
-          },
-          {
-            content: "Toán tử so sánh bằng trong C++?",
-            answers: { create: [
-              { content: "=", isCorrect: false },
-              { content: "==", isCorrect: true },
-              { content: "===", isCorrect: false },
-              { content: ":=", isCorrect: false },
-            ] }
-          },
-          {
-            content: "Hàm main trả về kiểu gì trong C++?",
-            answers: { create: [
-              { content: "int", isCorrect: true },
-              { content: "void", isCorrect: false },
-              { content: "main", isCorrect: false },
-              { content: "bool", isCorrect: false },
-            ] }
-          },
-          // ... Thêm 15 câu C++ còn lại ...
-        ]
+  {
+    content: "Tập tin nguồn C++ có phần mở rộng là gì?",
+    answers: {
+      create: [
+        { content: ".cpp", isCorrect: true },
+        { content: ".c", isCorrect: false },
+        { content: ".java", isCorrect: false },
+        { content: ".exe", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào khai báo biến số nguyên đúng trong C++?",
+    answers: {
+      create: [
+        { content: "int x = 10;", isCorrect: true },
+        { content: "integer x = 10;", isCorrect: false },
+        { content: "num x = 10;", isCorrect: false },
+        { content: "x int = 10;", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để in ra màn hình trong C++?",
+    answers: {
+      create: [
+        { content: "cout << 'Hello';", isCorrect: true },
+        { content: "printf('Hello');", isCorrect: true },
+        { content: "System.out.println('Hello');", isCorrect: false },
+        { content: "echo('Hello');", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Toán tử nào dùng để so sánh bằng trong C++?",
+    answers: {
+      create: [
+        { content: "==", isCorrect: true },
+        { content: "=", isCorrect: false },
+        { content: "===", isCorrect: false },
+        { content: ":=", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Vòng lặp nào dùng khi biết trước số lần lặp trong C++?",
+    answers: {
+      create: [
+        { content: "for", isCorrect: true },
+        { content: "while", isCorrect: false },
+        { content: "do-while", isCorrect: false },
+        { content: "switch", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào đúng để khai báo mảng trong C++?",
+    answers: {
+      create: [
+        { content: "int arr[5];", isCorrect: true },
+        { content: "int arr[] = {1,2,3};", isCorrect: true },
+        { content: "array arr = [1,2,3];", isCorrect: false },
+        { content: "let arr = [1,2,3];", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào khai báo hàm trả về int trong C++?",
+    answers: {
+      create: [
+        { content: "int myFunc() {}", isCorrect: true },
+        { content: "void myFunc() {}", isCorrect: false },
+        { content: "function myFunc() {}", isCorrect: false },
+        { content: "def myFunc():", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào đúng để kiểm tra điều kiện trong C++?",
+    answers: {
+      create: [
+        { content: "if (x > 0) {}", isCorrect: true },
+        { content: "if x > 0 then {}", isCorrect: false },
+        { content: "switch(x) {}", isCorrect: true },
+        { content: "case x > 0 {}", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để thoát khỏi vòng lặp trong C++?",
+    answers: {
+      create: [
+        { content: "break;", isCorrect: true },
+        { content: "continue;", isCorrect: false },
+        { content: "exit;", isCorrect: false },
+        { content: "stop;", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để bỏ qua một lượt lặp trong C++?",
+    answers: {
+      create: [
+        { content: "continue;", isCorrect: true },
+        { content: "break;", isCorrect: false },
+        { content: "skip;", isCorrect: false },
+        { content: "next;", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào khai báo con trỏ đúng trong C++?",
+    answers: {
+      create: [
+        { content: "int* p;", isCorrect: true },
+        { content: "pointer p;", isCorrect: false },
+        { content: "int &p;", isCorrect: false },
+        { content: "int p*;", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để cấp phát động bộ nhớ trong C++?",
+    answers: {
+      create: [
+        { content: "new int[5];", isCorrect: true },
+        { content: "malloc(5);", isCorrect: false },
+        { content: "int[5];", isCorrect: false },
+        { content: "alloc(5);", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để giải phóng bộ nhớ đã cấp phát động?",
+    answers: {
+      create: [
+        { content: "delete p;", isCorrect: true },
+        { content: "free(p);", isCorrect: false },
+        { content: "release(p);", isCorrect: false },
+        { content: "remove(p);", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để khai báo hằng số trong C++?",
+    answers: {
+      create: [
+        { content: "const int MAX = 100;", isCorrect: true },
+        { content: "#define MAX 100", isCorrect: true },
+        { content: "let MAX = 100;", isCorrect: false },
+        { content: "int const MAX = 100;", isCorrect: true }
+      ]
+    }
+  },
+  {
+    content: "Câu nào đúng để lấy độ dài mảng trong C++?",
+    answers: {
+      create: [
+        { content: "sizeof(arr)/sizeof(arr[0])", isCorrect: true },
+        { content: "arr.length", isCorrect: false },
+        { content: "length(arr)", isCorrect: false },
+        { content: "arr.size()", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để nhập dữ liệu từ bàn phím trong C++?",
+    answers: {
+      create: [
+        { content: "cin >> x;", isCorrect: true },
+        { content: "scanf('%d', &x);", isCorrect: true },
+        { content: "input(x);", isCorrect: false },
+        { content: "cin << x;", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để kết thúc chương trình trong C++?",
+    answers: {
+      create: [
+        { content: "return 0;", isCorrect: true },
+        { content: "exit(0);", isCorrect: true },
+        { content: "stop;", isCorrect: false },
+        { content: "end;", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào đúng để tạo lớp trong C++?",
+    answers: {
+      create: [
+        { content: "class MyClass {}", isCorrect: true },
+        { content: "struct MyClass {}", isCorrect: true },
+        { content: "object MyClass {}", isCorrect: false },
+        { content: "interface MyClass {}", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào đúng để kế thừa lớp trong C++?",
+    answers: {
+      create: [
+        { content: "class B : public A {}", isCorrect: true },
+        { content: "class B extends A {}", isCorrect: false },
+        { content: "class B inherits A {}", isCorrect: false },
+        { content: "class B implements A {}", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Câu nào dùng để tạo hàm ảo trong C++?",
+    answers: {
+      create: [
+        { content: "virtual void myFunc();", isCorrect: true },
+        { content: "void virtual myFunc();", isCorrect: false },
+        { content: "override void myFunc();", isCorrect: false },
+        { content: "void myFunc() override;", isCorrect: false }
+      ]
+    }
+  }
+]
+
       }
     }
   });
@@ -693,6 +868,7 @@ const initSeedConfig = async () => {
     }
   }
 ]
+
       }
     }
   });
