@@ -32,6 +32,13 @@ const initSeedConfig = async () => {
 
   const firstUser = await prisma.user.findFirst();
 
+  // Check if quizzes already exist
+  const quizCount = await prisma.quiz.count();
+  if (quizCount > 0) {
+    console.log("✅ Quizzes already seeded!");
+    return;
+  }
+
   // ================= Quiz Java =================
   await prisma.quiz.create({
     data: {
