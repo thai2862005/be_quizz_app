@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "prisma:seed": "ts-node ./src/config/seed.ts"
   },
   "nodemonConfig": {
     "watch": [
@@ -21,17 +22,20 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^6.19.0",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
     "cors": "2.8.5",
     "express": "5.0.1",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
-    "@types/cors": "2.8.17",
-    "@types/express": "5.0.0",
-    "@types/node": "22.10.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.15.6",
     "nodemon": "3.1.9",
-    "prisma": "^6.19.0",
+    "prisma": "^7.0.0",
     "ts-node": "10.9.2",
     "typescript": "5.7.3"
   }

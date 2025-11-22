@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import express, { Express } from 'express';
 import { createUser, deleteUser, updateUser, getUserById, getALLUsers, countTotalUsers, getAllUserTopScore, getAllUserTop7to10} from '../service/user.service';
 import { Request, Response } from 'express';
