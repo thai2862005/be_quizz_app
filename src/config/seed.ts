@@ -427,7 +427,7 @@ const initSeedConfig = async () => {
   {
     content: "Tập tin nguồn C++ có phần mở rộng là gì?",
     answers: {
-      create: [
+      create: [ 
         { content: ".cpp", isCorrect: true },
         { content: ".c", isCorrect: false },
         { content: ".java", isCorrect: false },

@@ -1,6 +1,5 @@
 import { Request,Response } from "express"
 import { getQuizResults, saveQuizResult, saveQuizResultById } from "../service/result.service";
-import { message } from "antd";
 const saveQuizResultAPi = async (req:Request,res:Response)=>{
     const {quizId,score} = req.body;
     const user = (req as any).user;
