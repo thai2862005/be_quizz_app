@@ -4,8 +4,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon",
     "dev": "nodemon",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:seed": "ts-node ./src/config/seed.ts"
   },
   "nodemonConfig": {
@@ -25,6 +28,7 @@
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.0.0",
     "cors": "2.8.5",
+    "dotenv": "^16.0.0",
     "express": "5.0.1",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3"
