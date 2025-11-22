@@ -8,8 +8,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 webRouter(app);
 
-// Chạy seed không block server
-initSeedConfig().catch(console.error);
+// TODO: Run seed separately using one-off command on production
+// initSeedConfig().catch(console.error);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
