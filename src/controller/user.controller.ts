@@ -1,70 +1,205 @@
-import express, { Express } from 'express';
-import { createUser, deleteUser, updateUser, getUserById, getALLUsers, countTotalUsers, getAllUserTopScore, getAllUserTop7to10} from '../service/user.service';
-import { Request, Response } from 'express';
-//create user
-const CreateUserApi = async(req:Request, res:Response) => {
-  // Logic to create a new user
-  const { name, email, password } = req.body;
-    const user = await createUser(name, email, password);
-    res.status(201).json({ user, message: "User created successfully"});
-}
-//delete user
-const DeleteUserApi = async  (req:Request, res:Response) => {
-  // Logic to delete a user
-    const { id } = req.params;
-    const user = await deleteUser(+id);
-    res.status(200).json({ user, message:"User deleted successfully" });
-}
-//update user
-const UpdateUserApi =async (req:Request, res:Response) => {
+import { Request, Response } from "express";
+import { Prisma } from "@prisma/client";
+import {
+  countTotalUsers,
+  createUser,
+  deleteUser,
+  getALLUsers,
+  getAllUserTop7to10,
+  getAllUserTopScore,
+  getUserById,
+  updateUser,
+} from "../service/user.service";
 
-    // Logic to update a user
-  const { id } = req.params;
-  const { name, email, password } = req.body;
-    const user = await updateUser(+id, name, email, password);
-    res.status(200).json({ user, message:"User updated successfully"});
-}
-//get user by id
-const GetUserByIdApi = async(req:Request, res:Response) => {
-  // Logic to get a user by ID
-  const { id } = req.params;
-  const user = await getUserById(+id);
-  res.status(200).json({ user, message: "User retrieved successfully"});
-}
-//get all users with pagination
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const parsePositiveId = (value: string): number | null => {
+  if (!/^[1-9]\d*$/.test(value)) {
+    return null;
+  }
+  const id = Number(value);
+  return Number.isSafeInteger(id) ? id : null;
+};
+
+const isNotFoundError = (error: unknown) =>
+  error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025";
+
+const toPublicUser = ({ id, name, email }: { id: number; name: string; email: string }) =>
+  ({ id, name, email });
+
+const CreateUserApi = async (req: Request, res: Response) => {
+  const { name, email, password } = req.body ?? {};
+  if (
+    typeof name !== "string" ||
+    name.trim().length === 0 ||
+    typeof email !== "string" ||
+    !isValidEmail(email) ||
+    typeof password !== "string" ||
+    password.length === 0
+  ) {
+    res.status(400).json({
+      code: "INVALID_USER",
+      message: "Name, valid email, and password are required",
+    });
+    return;
+  }
+
+  try {
+    const user = await createUser(name.trim(), email.trim(), password);
+    res.status(201).json({
+      user: toPublicUser(user),
+      message: "User created successfully",
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      res.status(409).json({
+        code: "EMAIL_ALREADY_REGISTERED",
+        message: "Email is already registered",
+      });
+      return;
+    }
+    console.error("Failed to create user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const DeleteUserApi = async (req: Request, res: Response) => {
+  const id = parsePositiveId(req.params.id);
+  if (id === null) {
+    res.status(400).json({ code: "INVALID_USER_ID", message: "User ID must be a positive integer" });
+    return;
+  }
+
+  try {
+    const user = await deleteUser(id);
+    res.status(200).json({ user: toPublicUser(user), message: "User deleted successfully" });
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    console.error(`Failed to delete user ${id}:`, error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const UpdateUserApi = async (req: Request, res: Response) => {
+  const id = parsePositiveId(req.params.id);
+  const { name, email, password } = req.body ?? {};
+  if (id === null) {
+    res.status(400).json({ code: "INVALID_USER_ID", message: "User ID must be a positive integer" });
+    return;
+  }
+  if (
+    typeof name !== "string" ||
+    name.trim().length === 0 ||
+    typeof email !== "string" ||
+    !isValidEmail(email) ||
+    typeof password !== "string" ||
+    password.length === 0
+  ) {
+    res.status(400).json({
+      code: "INVALID_USER",
+      message: "Name, valid email, and password are required",
+    });
+    return;
+  }
+
+  try {
+    const user = await updateUser(id, name.trim(), email.trim(), password);
+    res.status(200).json({ user: toPublicUser(user), message: "User updated successfully" });
+  } catch (error) {
+    if (isNotFoundError(error)) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      res.status(409).json({
+        code: "EMAIL_ALREADY_REGISTERED",
+        message: "Email is already registered",
+      });
+      return;
+    }
+    console.error(`Failed to update user ${id}:`, error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const GetUserByIdApi = async (req: Request, res: Response) => {
+  const id = parsePositiveId(req.params.id);
+  if (id === null) {
+    res.status(400).json({ code: "INVALID_USER_ID", message: "User ID must be a positive integer" });
+    return;
+  }
+
+  try {
+    const user = await getUserById(id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(200).json({ user: toPublicUser(user), message: "User retrieved successfully" });
+  } catch (error) {
+    console.error(`Failed to retrieve user ${id}:`, error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getALLUsersApi = async (req: Request, res: Response) => {
-    const { page } = req.query;
-    let currentPage = page ? +page : 1;
-    if (currentPage <= 0) currentPage = 1;
+  const { page } = req.query;
+  if (
+    page !== undefined &&
+    (typeof page !== "string" || !/^[1-9]\d*$/.test(page) || !Number.isSafeInteger(Number(page)))
+  ) {
+    res.status(400).json({ code: "INVALID_PAGE", message: "Page must be a positive integer" });
+    return;
+  }
+  const currentPage = page === undefined ? 1 : Number(page);
 
+  try {
     const countTotalUser = await countTotalUsers();
-    const users = await getALLUsers(+currentPage);
-    console.log("Users found:", users.length);
-
-    res.status(200).json({ 
-        users,
-        countTotalUser,
-        currentPage,
-        message: "get All users successfully"
+    const users = await getALLUsers(currentPage);
+    res.status(200).json({
+      users: users.map(({ id, name, email, results }) => ({ id, name, email, results })),
+      countTotalUser,
+      currentPage,
+      message: "get All users successfully",
     });
-}
+  } catch (error) {
+    console.error("Failed to retrieve users:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-const getALLUsersTopScoreApi = async (req: Request, res: Response) => {
-
+const getALLUsersTopScoreApi = async (_req: Request, res: Response) => {
+  try {
     const users = await getAllUserTopScore();
-    console.log("Users found:", users.length);
+    res.status(200).json({ users, message: "get All users top score successfully" });
+  } catch (error) {
+    console.error("Failed to retrieve top scores:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-    res.status(200).json({ 
-        users,
-        message: "get All users top score successfully"
-    });
-}
-const getAllUserTop7to10ScoreApi = async (req: Request, res: Response) => {
+const getAllUserTop7to10ScoreApi = async (_req: Request, res: Response) => {
+  try {
     const users = await getAllUserTop7to10();
-    console.log("Users found:", users.length);
-    res.status(200).json({ 
-        users: users,
-        message: "get All users top 7 to 10 score successfully"
+    res.status(200).json({
+      users,
+      message: "get All user top 7 to 10 score successfully",
     });
-}
-export { CreateUserApi, DeleteUserApi, UpdateUserApi, GetUserByIdApi, getALLUsersApi,getALLUsersTopScoreApi, getAllUserTop7to10ScoreApi };
+  } catch (error) {
+    console.error("Failed to retrieve users ranked 4 to 10:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export {
+  CreateUserApi,
+  DeleteUserApi,
+  UpdateUserApi,
+  GetUserByIdApi,
+  getALLUsersApi,
+  getALLUsersTopScoreApi,
+  getAllUserTop7to10ScoreApi,
+};

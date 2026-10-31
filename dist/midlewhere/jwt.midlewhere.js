@@ -6,23 +6,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkJwt = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const checkJwt = (req, res, next) => {
-    const path = req.path;
-    const whitelist = ["/login"];
-    const isWhitelist = whitelist.some((i) => path.startsWith(i));
-    if (isWhitelist) {
-        return next();
-    }
     const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(";");
+    const token = authHeader && authHeader.split(" ")[1];
     if (!token) {
         return res.status(401).json({ message: "no token provided" });
     }
+    const secretKey = process.env.JWT_SECRET;
+    if (!secretKey) {
+        console.error("JWT_SECRET is not configured");
+        return res.status(500).json({ message: "Authentication is not configured" });
+    }
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY);
+        const decoded = jsonwebtoken_1.default.verify(token, secretKey);
+        if (typeof decoded === "string" || typeof decoded.id !== "number") {
+            return res.status(401).json({
+                data: null,
+                message: "Token không hợp lệ (Cần truyền lên Token)",
+            });
+        }
         req.user = {
             id: decoded.id,
-            fullname: decoded.fullname,
-            username: decoded.username,
+            name: decoded.name,
+            email: decoded.email,
             roleId: decoded.roleId,
             role: decoded.role,
         };

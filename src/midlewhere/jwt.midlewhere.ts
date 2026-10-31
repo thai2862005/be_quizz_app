@@ -1,24 +1,29 @@
 import { Request,Response,NextFunction } from "express"
 import jwt from 'jsonwebtoken';
 const checkJwt = (req:Request,res:Response,next:NextFunction)=>{
-const path = req.path;
-const whitelist = ["/login","/register"];
-const isWhitelist = whitelist.some(item => item === path);
-if(isWhitelist){
-    return next();
-}
 const authHeader = req.headers["authorization"];
 const token = authHeader && authHeader.split(" ")[1];
 if(!token){
     return res.status(401).json({message:"no token provided"})
 }
+const secretKey = process.env.JWT_SECRET;
+if (!secretKey) {
+    console.error("JWT_SECRET is not configured");
+    return res.status(500).json({ message: "Authentication is not configured" });
+}
 try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY as string) as any;
+    const decoded = jwt.verify(token, secretKey);
+    if (typeof decoded === "string" || typeof decoded.id !== "number") {
+      return res.status(401).json({
+        data: null,
+        message: "Token không hợp lệ (Cần truyền lên Token)",
+      });
+    }
 
     (req as any).user = {
       id: decoded.id,
-      fullname: decoded.fullname,
-      username: decoded.username,
+      name: decoded.name,
+      email: decoded.email,
       roleId: decoded.roleId,
       role: decoded.role,
     };

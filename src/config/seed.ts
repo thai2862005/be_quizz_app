@@ -1,5 +1,37 @@
 import { prisma } from "./client";
 
+const assignSeedQuestionDifficulties = async () => {
+  const quizzes = await prisma.quiz.findMany({
+    where: { title: { in: [" Java", "JavaScript", "C++", "Python"] } },
+    select: {
+      id: true,
+      questions: {
+        select: { id: true },
+        orderBy: { id: "asc" },
+      },
+    },
+  });
+
+  for (const quiz of quizzes) {
+    const easyEnd = Math.ceil(quiz.questions.length / 3);
+    const mediumEnd = Math.ceil((quiz.questions.length * 2) / 3);
+    const groups = [
+      { difficulty: "EASY", ids: quiz.questions.slice(0, easyEnd).map(({ id }) => id) },
+      { difficulty: "MEDIUM", ids: quiz.questions.slice(easyEnd, mediumEnd).map(({ id }) => id) },
+      { difficulty: "HARD", ids: quiz.questions.slice(mediumEnd).map(({ id }) => id) },
+    ] as const;
+
+    for (const group of groups) {
+      if (group.ids.length > 0) {
+        await prisma.question.updateMany({
+          where: { id: { in: group.ids } },
+          data: { difficulty: group.difficulty },
+        });
+      }
+    }
+  }
+};
+
 const initSeedConfig = async () => {
   // 1️⃣ Seed ROLE
   const roleCount = await prisma.role.count();
@@ -43,7 +75,7 @@ const initSeedConfig = async () => {
   await prisma.quiz.create({
     data: {
       title: " Java",
-      description: "20 câu trắc nghiệm cơ bản về Java",
+      description: "20 câu trắc nghiệm Java phân theo mức độ dễ, vừa và khó",
       userId: firstUser!.id,
       questions: {
         create: [
@@ -236,7 +268,7 @@ const initSeedConfig = async () => {
   await prisma.quiz.create({
     data: {
       title: "JavaScript",
-      description: "20 câu trắc nghiệm cơ bản về JavaScript",
+      description: "20 câu trắc nghiệm JavaScript phân theo mức độ dễ, vừa và khó",
       userId: firstUser!.id,
       questions: {
         create: [
@@ -420,7 +452,7 @@ const initSeedConfig = async () => {
   await prisma.quiz.create({
     data: {
       title: "C++",
-      description: "20 câu trắc nghiệm cơ bản về C++",
+      description: "20 câu trắc nghiệm C++ có một đáp án đúng mỗi câu, phân theo độ khó",
       userId: firstUser!.id,
       questions: {
         create: [
@@ -447,11 +479,11 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào dùng để in ra màn hình trong C++?",
+    content: "Câu nào dùng std::cout để in chuỗi ra màn hình trong C++?",
     answers: {
       create: [
-        { content: "cout << 'Hello';", isCorrect: true },
-        { content: "printf('Hello');", isCorrect: true },
+        { content: "std::cout << \"Hello\";", isCorrect: true },
+        { content: "printf(\"Hello\");", isCorrect: false },
         { content: "System.out.println('Hello');", isCorrect: false },
         { content: "echo('Hello');", isCorrect: false }
       ]
@@ -480,11 +512,11 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào đúng để khai báo mảng trong C++?",
+    content: "Câu nào khai báo một mảng cục bộ gồm đúng 5 số nguyên trong C++?",
     answers: {
       create: [
         { content: "int arr[5];", isCorrect: true },
-        { content: "int arr[] = {1,2,3};", isCorrect: true },
+        { content: "int arr[] = {1,2,3};", isCorrect: false },
         { content: "array arr = [1,2,3];", isCorrect: false },
         { content: "let arr = [1,2,3];", isCorrect: false }
       ]
@@ -502,12 +534,12 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào đúng để kiểm tra điều kiện trong C++?",
+    content: "Từ khóa nào mở đầu câu lệnh if kiểm tra điều kiện trong C++?",
     answers: {
       create: [
         { content: "if (x > 0) {}", isCorrect: true },
         { content: "if x > 0 then {}", isCorrect: false },
-        { content: "switch(x) {}", isCorrect: true },
+        { content: "switch(x) {}", isCorrect: false },
         { content: "case x > 0 {}", isCorrect: false }
       ]
     }
@@ -568,13 +600,13 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào dùng để khai báo hằng số trong C++?",
+    content: "Câu nào khai báo biến hằng kiểu int bằng từ khóa const trong C++?",
     answers: {
       create: [
         { content: "const int MAX = 100;", isCorrect: true },
-        { content: "#define MAX 100", isCorrect: true },
+        { content: "#define MAX 100", isCorrect: false },
         { content: "let MAX = 100;", isCorrect: false },
-        { content: "int const MAX = 100;", isCorrect: true }
+        { content: "int MAX = 100;", isCorrect: false }
       ]
     }
   },
@@ -590,33 +622,33 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào dùng để nhập dữ liệu từ bàn phím trong C++?",
+    content: "Câu nào dùng std::cin để nhập x từ bàn phím trong C++?",
     answers: {
       create: [
-        { content: "cin >> x;", isCorrect: true },
-        { content: "scanf('%d', &x);", isCorrect: true },
+        { content: "std::cin >> x;", isCorrect: true },
+        { content: "scanf('%d', &x);", isCorrect: false },
         { content: "input(x);", isCorrect: false },
         { content: "cin << x;", isCorrect: false }
       ]
     }
   },
   {
-    content: "Câu nào dùng để kết thúc chương trình trong C++?",
+    content: "Câu lệnh nào trả mã thành công 0 từ hàm main trong C++?",
     answers: {
       create: [
         { content: "return 0;", isCorrect: true },
-        { content: "exit(0);", isCorrect: true },
+        { content: "exit(0);", isCorrect: false },
         { content: "stop;", isCorrect: false },
         { content: "end;", isCorrect: false }
       ]
     }
   },
   {
-    content: "Câu nào đúng để tạo lớp trong C++?",
+    content: "Từ khóa nào mở đầu khai báo class (không phải struct) trong C++?",
     answers: {
       create: [
         { content: "class MyClass {}", isCorrect: true },
-        { content: "struct MyClass {}", isCorrect: true },
+        { content: "struct MyClass {}", isCorrect: false },
         { content: "object MyClass {}", isCorrect: false },
         { content: "interface MyClass {}", isCorrect: false }
       ]
@@ -654,7 +686,7 @@ const initSeedConfig = async () => {
   await prisma.quiz.create({
     data: {
       title: "Python",
-      description: "20 câu trắc nghiệm cơ bản về Python",
+      description: "20 câu trắc nghiệm Python có một đáp án đúng mỗi câu, phân theo độ khó",
       userId: firstUser!.id,
       questions: {
         create: [
@@ -725,23 +757,23 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Vòng lặp nào dùng để lặp qua list trong Python?",
+    content: "Cấu trúc vòng lặp nào thường dùng để duyệt từng phần tử của list trong Python?",
     answers: {
       create: [
         { content: "for x in arr:", isCorrect: true },
-        { content: "while condition:", isCorrect: true },
+        { content: "while condition:", isCorrect: false },
         { content: "do-while", isCorrect: false },
         { content: "foreach", isCorrect: false }
       ]
     }
   },
   {
-    content: "Câu nào dùng để kiểm tra điều kiện trong Python?",
+    content: "Từ khóa nào mở đầu một khối điều kiện trong Python?",
     answers: {
       create: [
         { content: "if x > 0:", isCorrect: true },
-        { content: "elif x == 0:", isCorrect: true },
-        { content: "else:", isCorrect: true },
+        { content: "elif x == 0:", isCorrect: false },
+        { content: "else:", isCorrect: false },
         { content: "switch x:", isCorrect: false }
       ]
     }
@@ -802,11 +834,11 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào kiểm tra biến có giá trị None trong Python?",
+    content: "Cách so sánh nào được khuyến nghị để kiểm tra x là None trong Python?",
     answers: {
       create: [
         { content: "if x is None:", isCorrect: true },
-        { content: "if x == None:", isCorrect: true },
+        { content: "if x == None:", isCorrect: false },
         { content: "if x = None:", isCorrect: false },
         { content: "if x != None:", isCorrect: false }
       ]
@@ -835,35 +867,46 @@ const initSeedConfig = async () => {
     }
   },
   {
-    content: "Câu nào dùng để xóa phần tử cuối cùng của list trong Python?",
+    content: "Phương thức list nào xóa và trả về phần tử cuối cùng trong Python?",
     answers: {
       create: [
         { content: "arr.pop()", isCorrect: true },
         { content: "arr.remove()", isCorrect: false },
-        { content: "del arr[-1]", isCorrect: true },
+        { content: "del arr[-1]", isCorrect: false },
         { content: "arr.delete()", isCorrect: false }
       ]
     }
   },
   {
-    content: "Câu nào dùng để thêm phần tử vào list trong Python?",
+    content: "Phương thức nào thêm một phần tử vào cuối list trong Python?",
     answers: {
       create: [
         { content: "arr.append(10)", isCorrect: true },
-        { content: "arr.insert(0,10)", isCorrect: true },
+        { content: "arr.insert(0,10)", isCorrect: false },
         { content: "arr.add(10)", isCorrect: false },
         { content: "arr.push(10)", isCorrect: false }
       ]
     }
   },
   {
-    content: "Câu nào dùng để lặp qua dictionary trong Python?",
+    content: "Cách nào lặp qua các cặp key/value trong dictionary Python?",
     answers: {
       create: [
         { content: "for key, value in d.items():", isCorrect: true },
-        { content: "for key in d:", isCorrect: true },
+        { content: "for key in d:", isCorrect: false },
         { content: "for item in d:", isCorrect: false },
         { content: "for (key,value) in d:", isCorrect: false }
+      ]
+    }
+  },
+  {
+    content: "Từ khóa nào dùng để khai báo một lớp trong Python?",
+    answers: {
+      create: [
+        { content: "class", isCorrect: true },
+        { content: "def", isCorrect: false },
+        { content: "struct", isCorrect: false },
+        { content: "interface", isCorrect: false }
       ]
     }
   }
@@ -872,6 +915,8 @@ const initSeedConfig = async () => {
       }
     }
   });
+
+  await assignSeedQuestionDifficulties();
 
   console.log("✅ All 4 quizzes (Java, JavaScript, C++, Python) + questions + answers seeded!");
 };

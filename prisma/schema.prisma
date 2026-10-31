@@ -3,7 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum DifficultyLevel {
+  EASY
+  MEDIUM
+  HARD
 }
 
 model User {
@@ -12,7 +19,6 @@ model User {
   email    String   @unique
   password String
 
-  // Quan hệ
   roleId   Int?
   role     role?    @relation(fields: [roleId], references: [id])
   quizzes  Quiz[]   @relation("UserQuiz")
@@ -26,7 +32,6 @@ model Quiz {
   title       String
   description String?
 
-  // Quan hệ
   questions   Question[]
   user        User        @relation("UserQuiz", fields: [userId], references: [id])
   userId      Int
@@ -35,13 +40,15 @@ model Quiz {
 }
 
 model Question {
-  id        Int        @id @default(autoincrement())
-  content   String
-  quizId    Int
-  quiz      Quiz       @relation(fields: [quizId], references: [id])
-  answers   Answer[]
-  @@map("questions")
+  id         Int             @id @default(autoincrement())
+  content    String
+  difficulty DifficultyLevel @default(MEDIUM)
+  quizId     Int
+  quiz       Quiz            @relation(fields: [quizId], references: [id])
+  answers    Answer[]
 
+  @@index([quizId, difficulty])
+  @@map("questions")
 }
 
 model Answer {

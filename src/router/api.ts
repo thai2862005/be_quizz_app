@@ -1,7 +1,7 @@
 import express from 'express';
 import { Express } from 'express';
 import { CreateUserApi, DeleteUserApi, getALLUsersApi, getALLUsersTopScoreApi, getAllUserTop7to10ScoreApi, GetUserByIdApi, UpdateUserApi } from '../controller/user.controller';
-import { getALLQuizzesApi, getQuizzByIdApi } from '../controller/quizz.controller';
+import { getALLQuizzesApi, getQuizzByIdApi, getQuizPackageApi } from '../controller/quizz.controller';
 import { getQuizResultsApi, saveQuizResultAPi, saveQuizResultByIdApi } from '../controller/result.controller';
 import { fetchAccountAPi, LoginApi, registerUserApi } from '../controller/auth.controller';
 import { checkJwt } from '../midlewhere/jwt.midlewhere';
@@ -13,6 +13,7 @@ const webRouter =(app:Express) => {
 
 //quizzes
 router.get("/quizzes", getALLQuizzesApi);
+router.get("/quizzes/:id/package", getQuizPackageApi);
 router.get("/quizzes/:id", getQuizzByIdApi);
 //users
 router.get("/users",checkJwt, getALLUsersApi);

@@ -62,13 +62,8 @@ const countTotalUsers = async () => {
         return users;
     }
 
-// =======================
-// Lấy Top 3 user theo điểm cao nhất
-// =======================
 
-// =======================
 // Lấy Top 3 user theo điểm cao nhất
-// =======================
  const getAllUserTopScore = async () => {
   // 1) Group theo tổng sum
   const grouped = await prisma.result.groupBy({
@@ -133,8 +128,6 @@ const countTotalUsers = async () => {
     const collectedIds = top3.map((t) => t.userId);
     const remaining = 3 - filtered.length;
 
-    console.log(`DEBUG: Need ${remaining} more users → fetch from user table`);
-
     const extras = await prisma.user.findMany({
       where: { id: { notIn: collectedIds } },
       orderBy: { id: "asc" },
@@ -154,9 +147,7 @@ const countTotalUsers = async () => {
   return filtered;
 };  
 
-// =======================
 // Lấy Top 4 → 10 user theo điểm cao nhất
-// =======================
 const getAllUserTop7to10 = async () => {
   // 1) Lấy grouped theo tổng sum, sắp xếp giảm dần
   const grouped = await prisma.result.groupBy({

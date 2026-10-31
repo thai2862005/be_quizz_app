@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && node --test tests/quiz.validation.test.cjs",
     "dev": "nodemon",
     "build": "tsc",
     "start": "node dist/app.js",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
-    "prisma:seed": "ts-node ./src/config/seed.ts"
+    "prisma:seed": "ts-node ./src/config/seed.ts",
+    "prisma:seed:translations": "ts-node ./src/config/seed-translations.ts"
   },
   "nodemonConfig": {
     "watch": [
@@ -26,20 +27,21 @@
   "description": "",
   "dependencies": {
     "@prisma/adapter-pg": "^7.0.0",
-    "@prisma/client": "^7.0.0",
+    "@prisma/client": "^6.19.3",
     "cors": "2.8.5",
     "dotenv": "^16.0.0",
     "express": "5.0.1",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "prisma": "^6.19.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.10.7",
     "@types/pg": "^8.15.6",
     "nodemon": "3.1.9",
-    "prisma": "^7.0.0",
     "ts-node": "10.9.2",
     "typescript": "5.7.3"
   }

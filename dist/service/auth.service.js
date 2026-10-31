@@ -42,7 +42,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleLogin = void 0;
+exports.registerUser = exports.handleLogin = void 0;
 const client_1 = require("../config/client");
 const jwt = __importStar(require("jsonwebtoken"));
 const handleLogin = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,11 +50,14 @@ const handleLogin = (username, password) => __awaiter(void 0, void 0, void 0, fu
         where: { email: username },
         include: { role: true },
     });
-    if (!user) {
-        throw new Error(`Username ${username} not found`);
+    if (!user || user.password !== password) {
+        return null;
     }
-    const secretKey = process.env.SECRET_KEY;
-    const expiresIn = process.env.EXPIRES_IN || '1h';
+    const secretKey = process.env.JWT_SECRET;
+    if (!secretKey) {
+        throw new Error("JWT_SECRET is not configured");
+    }
+    const expiresIn = (process.env.JWT_EXPIRES_IN || "1h");
     const payload = {
         id: user.id,
         name: user.name,
@@ -62,8 +65,28 @@ const handleLogin = (username, password) => __awaiter(void 0, void 0, void 0, fu
         roleId: user.roleId,
         role: user.role,
     };
-    const access_token = jwt.sign(payload, secretKey, { expiresIn });
+    const access_token = jwt.sign(payload, secretKey, {
+        expiresIn,
+    });
     return access_token;
 });
 exports.handleLogin = handleLogin;
+const registerUser = (name, email, password) => __awaiter(void 0, void 0, void 0, function* () {
+    const userRole = yield client_1.prisma.role.findUnique({
+        where: { name: "USER" },
+    });
+    if (userRole) {
+        const newUser = yield client_1.prisma.user.create({
+            data: {
+                name,
+                email,
+                password,
+                roleId: userRole.id,
+            },
+        });
+        return newUser;
+    }
+    throw new Error("USER role not found");
+});
+exports.registerUser = registerUser;
 //# sourceMappingURL=auth.service.js.map
