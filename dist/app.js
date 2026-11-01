@@ -11,8 +11,11 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 (0, api_1.default)(app);
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-});
+if (require.main === module) {
+    const port = process.env.PORT || 4000;
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    });
+}
+exports.default = app;
 //# sourceMappingURL=app.js.map

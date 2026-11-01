@@ -5,7 +5,7 @@
   "scripts": {
     "test": "npm run build && node --test tests/quiz.validation.test.cjs",
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/app.js",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate:deploy": "npx prisma migrate deploy",

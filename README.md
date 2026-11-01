@@ -136,9 +136,27 @@ npm start
 
 > `nodemon` sẽ tự động theo dõi thư mục `src/` và chạy `ts-node ./src/app.ts`.
 
+## 🚀 7. Deploy lên Vercel
+
+Dự án chạy Express dưới dạng Vercel Functions. Các endpoint hiện có vẫn dùng prefix `/api` (ví dụ: `/api/quizzes`, `/api/login`); không cần cấu hình `PORT` trên Vercel.
+
+Xem hướng dẫn đầy đủ từng bước tại [DEPLOY_VERCEL.md](./DEPLOY_VERCEL.md).
+
+1. Đẩy repository lên GitHub và import repository đó trong Vercel.
+2. Để Vercel phát hiện project Node.js; đặt **Build Command** là `npm run build` nếu Vercel không tự nhận lệnh này. Không cần đặt **Output Directory**.
+3. Trong **Project Settings → Environment Variables**, thêm:
+   - `DATABASE_URL`: connection string MySQL của database production có thể truy cập từ internet.
+   - `JWT_SECRET`: một secret ngẫu nhiên, dài và riêng cho production.
+   - `JWT_EXPIRES_IN`: tùy chọn, mặc định `1h`.
+4. Chọn môi trường cần áp dụng (Production/Preview/Development), lưu biến môi trường và deploy lại.
+
+Có thể dùng [`.env.example`](./.env.example) làm mẫu cho môi trường local; không đưa `.env` thật lên Git hoặc khai báo secret trong mã nguồn. Ký tự đặc biệt trong username/password của connection string cần được URL-encode.
+
+Build chạy `prisma generate` trước TypeScript compiler. Trước khi deploy, hãy xác nhận database production tương thích với Prisma schema và lịch sử migration. Repository hiện có cảnh báo về migration drift; **không chạy `prisma migrate deploy` hoặc seed trên database production** cho đến khi lịch sử migration đã được đối chiếu và đồng bộ.
+
 ---
 
-## ✅ 7. Kiểm tra nhanh API
+## ✅ 8. Kiểm tra nhanh API
 
 Ví dụ: Test route cơ bản trong `src/app.ts`
 
@@ -168,7 +186,7 @@ Rồi mở trình duyệt:
 
 ---
 
-## 🧩 8. Các lệnh hữu ích khác
+## 🧩 9. Các lệnh hữu ích khác
 
 | Mục đích | Lệnh |
 |-----------|------|
@@ -180,7 +198,7 @@ Rồi mở trình duyệt:
 
 ---
 
-## 🧠 9. Thông tin thêm
+## 🧠 10. Thông tin thêm
 
 - Framework: **Express.js v5**
 - ORM: **Prisma v6**
